@@ -216,7 +216,7 @@ export namespace Account {
         ),
       ),
     )
-    console.log(calls)
+    console.log(calls_encoded)
 
     // Compute digest to sign for the execute function.
     const digest = keccak256(
@@ -232,20 +232,21 @@ export namespace Account {
     // Extract r and s values from signature.
     const r = BigInt(slice(signature, 0, 32))
     const s = BigInt(slice(signature, 32, 64))
-  let target = calls[0].to as  `0x${string}`;
-    let callData = calls[0].data as  `0x${string}`
+    const mintCalls =  calls.map((call) =>{ return  { target: call.to as  `0x${string}`, callData:call.data as  `0x${string}`}} )
+    
+ 
     //Execute calls.
     // let hash =  await writeContract(client, {
     //   abi: ExperimentDelegation.abi,
     //   address: account.address,
     //   functionName: 'execute',
-    //   args: [calls_encoded,[{target:target, callData}],{ r, s }, webauthn, 0],
+    //   args: [calls_encoded,{ r, s }, webauthn, 0],
     //   account: null, // defer to sequencer to fill
     // })
 
-    const mintCalls =  calls.map((call) =>{ return  { target: call.to as  `0x${string}`, callData:call.data as  `0x${string}`}} )
+  //   const mintCalls =  calls.map((call) =>{ return  { target: call.to as  `0x${string}`, callData:call.data as  `0x${string}`}} )
     
-    console.log(mintCalls)
+  //   console.log(mintCalls)
 
    let hash =  await writeContract(client, {
       abi: ExperimentDelegation.abi,
