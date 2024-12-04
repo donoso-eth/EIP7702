@@ -216,13 +216,13 @@ export namespace Account {
         ),
       ),
     )
-    console.log(calls_encoded)
+  
 
     // Compute digest to sign for the execute function.
     const digest = keccak256(
       encodePacked(['uint256', 'bytes'], [nonce, calls_encoded]),
     )
-    console.log(account.key.id)
+  
     // Sign the digest with the authorized WebAuthn key.
     const { signature, webauthn } = await sign({
       hash: digest,

@@ -1,7 +1,6 @@
 import { QueryClient } from '@tanstack/react-query'
 import { defineChain } from 'viem';
 import { http, createConfig } from 'wagmi'
-import { odysseyTestnet } from 'wagmi/chains'
 
 export const queryClient = new QueryClient()
 export const chess = defineChain({
