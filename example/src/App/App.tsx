@@ -1,7 +1,6 @@
 import { AccountDetails } from '../components/AccountDetails'
 import { InitializeAccount } from '../components/InitializeAccount'
 import { Mint } from '../components/Mint'
-import { Send } from './components/Send'
 import { client } from '../config'
 import { Account } from '../modules/Account'
 
