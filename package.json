@@ -1,5 +1,5 @@
 {
-  "name": "exp-0001",
+  "name": "eip-7702",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter example-webauthn dev",
