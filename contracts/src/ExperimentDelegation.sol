@@ -11,6 +11,12 @@ import {WebAuthnP256} from "./utils/WebAuthnP256.sol";
 /// @notice Experimental EIP-7702 delegation contract that allows authorized Keys to invoke calls on behalf of an Authority.
 /// @dev WARNING: THIS CONTRACT IS AN EXPERIMENT AND HAS NOT BEEN AUDITED.
 contract ExperimentDelegation is MultiSendCallOnly {
+
+     struct Call {
+        address target;
+        bytes callData;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Data Structures
     ////////////////////////////////////////////////////////////////////////
@@ -181,6 +187,7 @@ contract ExperimentDelegation is MultiSendCallOnly {
 
         multiSend(calls);
     }
+    
 
     fallback() external payable {}
     receive() external payable {}

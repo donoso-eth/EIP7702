@@ -2,7 +2,7 @@ import { type BaseError, encodeFunctionData, parseEther } from 'viem'
 
 import { useWaitForTransactionReceipt } from 'wagmi'
 import { client } from '../config'
-import { ExperimentERC20 } from '../contracts'
+import { ExperimentERC20, Ignis, Tyde } from '../contracts'
 import { Account } from '../modules/Account'
 
 export function Mint({ account }: { account: Account.Account }) {
@@ -31,11 +31,19 @@ export function Mint({ account }: { account: Account.Account }) {
             account,
             calls: [
               {
-                to: ExperimentERC20.address,
+                to: Tyde.address,
                 data: encodeFunctionData({
-                  abi: ExperimentERC20.abi,
+                  abi: Tyde.abi,
                   functionName: 'mint',
-                  args: [account.address, parseEther('100')],
+                  args: [account.address],
+                }),
+              },
+              {
+                to: Ignis.address,
+                data: encodeFunctionData({
+                  abi: Ignis.abi,
+                  functionName: 'mint',
+                  args: [account.address],
                 }),
               },
             ],

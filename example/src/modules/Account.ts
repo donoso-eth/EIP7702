@@ -14,6 +14,7 @@ import {
 } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import {
+  call,
   readContract,
   waitForTransactionReceipt,
   writeContract,
@@ -60,7 +61,7 @@ export namespace Account {
     // Generate a new EOA. This Account will be used to inject the ExperimentDelegation
     // contract onto it.
     const account = privateKeyToAccount(generatePrivateKey())
-
+    
     // Create a WebAuthn credential which will be used as an authorized key
     // for the EOA.
     const credential = await createCredential({
@@ -194,12 +195,12 @@ export namespace Account {
     client: Client
   }) {
     // Fetch the next available nonce from the delegated EOA's contract.
-    const nonce = await readContract(client, {
+   let nonce = await readContract(client, {
       abi: ExperimentDelegation.abi,
       address: account.address,
       functionName: 'nonce',
     })
-
+ 
     // Encode calls into format required by the contract.
     const calls_encoded = concat(
       calls.map((call) =>
@@ -215,12 +216,13 @@ export namespace Account {
         ),
       ),
     )
+    console.log(calls)
 
     // Compute digest to sign for the execute function.
     const digest = keccak256(
       encodePacked(['uint256', 'bytes'], [nonce, calls_encoded]),
     )
-
+    console.log(account.key.id)
     // Sign the digest with the authorized WebAuthn key.
     const { signature, webauthn } = await sign({
       hash: digest,
@@ -230,15 +232,40 @@ export namespace Account {
     // Extract r and s values from signature.
     const r = BigInt(slice(signature, 0, 32))
     const s = BigInt(slice(signature, 32, 64))
+  let target = calls[0].to as  `0x${string}`;
+    let callData = calls[0].data as  `0x${string}`
+    //Execute calls.
+    // let hash =  await writeContract(client, {
+    //   abi: ExperimentDelegation.abi,
+    //   address: account.address,
+    //   functionName: 'execute',
+    //   args: [calls_encoded,[{target:target, callData}],{ r, s }, webauthn, 0],
+    //   account: null, // defer to sequencer to fill
+    // })
 
-    // Execute calls.
-    return await writeContract(client, {
+    const mintCalls =  calls.map((call) =>{ return  { target: call.to as  `0x${string}`, callData:call.data as  `0x${string}`}} )
+    
+    console.log(mintCalls)
+
+   let hash =  await writeContract(client, {
       abi: ExperimentDelegation.abi,
       address: account.address,
-      functionName: 'execute',
-      args: [calls_encoded, { r, s }, webauthn, 0],
+      functionName: 'aggregate',
+      args: [mintCalls],
       account: null, // defer to sequencer to fill
     })
+
+    // let hash = await writeContract(client, {
+    //   abi: ExperimentDelegation.abi,
+    //   address: account.address,
+    //   functionName: "forward",
+    //   args: [account.address],
+    //   account: null, // defer to sequencer to fill
+    // });
+
+
+    let rec = await waitForTransactionReceipt(client, { hash });
+    return hash
   }
 
   /////////////////////////////////////////////////////////
