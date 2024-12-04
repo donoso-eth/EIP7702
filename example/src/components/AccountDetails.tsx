@@ -4,7 +4,7 @@ import { useReadContract } from 'wagmi'
 import { client } from '../config'
 import { ExperimentERC20 } from '../contracts'
 import type { Account } from '../modules/Account'
-
+import "./style.css";
 export function AccountDetails({ account }: { account: Account.Account }) {
   const { data: expBalance } = useReadContract({
     ...ExperimentERC20,
@@ -27,12 +27,12 @@ export function AccountDetails({ account }: { account: Account.Account }) {
           Explorer
         </a>
       </div>
-      <div>
+      {/* <div>
         <strong>Balance:</strong>{' '}
         {typeof expBalance === 'bigint' && (
           <code>{formatEth(expBalance)} EXP (ERC20)</code>
         )}
-      </div>
+      </div> */}
     </div>
   )
 }

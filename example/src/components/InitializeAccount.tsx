@@ -2,7 +2,7 @@ import type { BaseError } from 'viem'
 
 import { client } from '../config'
 import { Account } from '../modules/Account'
-
+import "./style.css";
 export function InitializeAccount() {
   const { data: hash, ...createMutation } = Account.useCreate({
     client,
@@ -21,13 +21,13 @@ export function InitializeAccount() {
       >
         Register
       </button>
-      <button
+      {/* <button
         disabled={isPending}
         onClick={() => loadMutation.mutate()}
         type="button"
       >
         Sign In
-      </button>
+      </button> */}
       {hash && (
         <p>
           Account created!{' '}
